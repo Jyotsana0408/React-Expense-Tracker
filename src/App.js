@@ -1,14 +1,17 @@
+import './App.css';
+import { Fragment } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import React,{Fragment} from 'react';
-import { useSelector } from 'redux';
-import Home from "./Components/Pages/Home";
+import { useSelector } from 'react-redux';
 
-import ProfilePage from "./Components/Pages/Profile";
+import Home from "./Components/Pages/Home";
+import ProfilePage from './Components/Pages/Profile';
 import Authentication from './Components/Authentication/Authentication';
 
 function App() {
   const isLogin = useSelector(state => state.authentication.isLogin);
+
   return (
+
     <Fragment>
       <main>
      <Switch>
@@ -28,8 +31,10 @@ function App() {
               {!isLogin && <Redirect to='/auth' />}
             </Route>
       </Switch>
+
       </main>
     </Fragment>
   );
 }
+
 export default App;

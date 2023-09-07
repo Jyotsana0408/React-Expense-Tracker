@@ -1,12 +1,26 @@
+import { useState } from "react";
+import Login from "./Login";
 import classes from './Authentication.module.css';
+import { useDispatch } from "react-redux";
 import SignUp from "./SignUp";
+import { authAction } from "../store/auth-reducer";
+import { useHistory } from "react-router-dom";
+
 
 const Authentication = () => {
+    const [isLogin, setIsLogin] = useState(false);
+    const dispatch = useDispatch();
+    const history = useHistory();
+
 
 
     const SignUpHandler = (email, password) => {
-        fetch(
-                'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD61trb_TQ27ZLrT4ybyyFKWkht-DaUa0o',
+
+        }
+
+    const LoginHandler = (email, password) => {
+            fetch(
+                'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD61trb_TQ27ZLrT4ybyyFKWkht-DaUa0o',
                 {
                     method: 'POST',
                     body: JSON.stringify({
@@ -30,23 +44,49 @@ const Authentication = () => {
                 }
               })
               .then((data) => {
-                console.log('successfully created account');
+                const loginObj={idToken: data.idToken, email: data.email}
+                dispatch(authAction.login(loginObj))
                 console.log(data);
+                console.log('successfully loggedIn');
+                history.replace('/home');
               })
               .catch((err) => {
                 alert(err.message);
-              })
-        }
+              })     
+        };
 
+        const onClickSignUpHandler = () => {
+            setIsLogin(true)
+        };
 
+        const onClickLoginHandler = () => {
+            setIsLogin(false)
+        };
 
     return (
         <div className={classes.auth}>
           <div >
-            <SignUp onSignUp={SignUpHandler} />
+
+          {!isLogin &&<SignUp onSignUp={SignUpHandler} />}
+            {isLogin && <Login onLogin={LoginHandler} />}
+            {!isLogin && (
+                <button 
+                    className={classes.changebtn}
+                    onClick={onClickSignUpHandler}>
+                    Have an account? Login
+                </button>
+            )}
+            </div>
+            <div>
+            {isLogin && (
+                <button 
+                    className={classes.changebtn}
+                    onClick={onClickLoginHandler}>
+                    Don't have an account? Sign up
+                </button>
+            )}
             </div>
         </div>
     )
 };
-
 export default Authentication;
